@@ -1,4 +1,4 @@
-AT&T Pricing microservice
+noteboard
 ====
 
-Takes an AT&T cart and context, creates a corresponding cart in commercetools and returns the cart with pricing.
+TODO: add a readme!
