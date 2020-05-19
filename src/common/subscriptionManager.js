@@ -1,7 +1,6 @@
 // third party libs
 const _ = require('lodash')
 const { PubSub } = require('@google-cloud/pubsub');
-const CT = require('ctvault')
 
 let handlers = {}
 
@@ -55,9 +54,6 @@ if (!_.isEmpty(topic)) {
 
     subscription.on(`error`, (error) => { logger.error(`Error connecting to Google PubSub: ${JSON.stringify(error)}`) })
     logger.info(`Connected to Google PubSub topic [ ${topic} ]`)
-}
-else {
-    logger.error(`PubSub topic not found`)
 }
 
 module.exports = {

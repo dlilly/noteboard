@@ -2,14 +2,12 @@
 global.__basedir = require('app-root-path');
 global.utils = require('./common/utils');
 global.config = require('./common/config');
+global.logger = console
 
 // npm packages
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const CT = require('ctvault');
 const express = require('express');
-
-const serviceLoader = require('./common/serviceloader');
 
 // express app setup
 const app = express();
@@ -17,28 +15,30 @@ const port = config.get('port') || 3001;
 
 let commonHandlers = require('./common/common_handlers')
 
-app.listen(port, async () => {
-  app.use(bodyParser.text({ type: 'text/plain' }));
-  app.use(bodyParser.json());
+const server = app.listen(port);
 
-  // CORS support
-  app.use(cors());
+const SocketIO = require('socket.io')
+const io = SocketIO(server)
+global.io = io
 
-  // use the ctvault header middleware
-  app.use(CT.middleware.headers);
+const serviceLoader = require('./common/serviceloader');
+app.use(bodyParser.text({ type: 'text/plain' }));
+app.use(bodyParser.json());
 
-  // log each HTTP request
-  app.use(commonHandlers.log);
+// CORS support
+app.use(cors());
 
-  // load the UI
-  app.use('/ui', express.static(`${__dirname}/common/ui`));
+// log each HTTP request
+app.use(commonHandlers.log);
 
-  // load the services
-  app.use(serviceLoader)
+// load the UI
+app.use('/ui', express.static(`${__dirname}/common/ui`));
 
-  // global error handler
-  app.use(commonHandlers.error);
+// load the services
+app.use(serviceLoader)
 
-  logger.info(`Server started on port: ${port}`);
-  logger.info(`Application directory: ${__basedir}`)
-});
+// global error handler
+app.use(commonHandlers.error);
+
+logger.info(`Server started on port: ${port}`);
+logger.info(`Application directory: ${__basedir}`)

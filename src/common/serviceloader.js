@@ -9,7 +9,8 @@ let routes = {
     extensions: [],
     microservices: [],
     admin_microservices: [],
-    subscriptions: []
+    subscriptions: [],
+    ui: []
 }
 
 let getServices = () => _.flatten(_.concat([], Object.values(routes)))
@@ -61,6 +62,10 @@ let loadDir = dir => {
                     subscriberManager.subscribe(obj)
                     break;
 
+                case "ui":
+                    router.use(obj.path, express.static(`${__dirname}/../services/${serviceName}/${obj.localPath}`));
+                    break;
+              
                 default:
                     break;
             }
@@ -70,16 +75,14 @@ let loadDir = dir => {
 
 let serviceDir = `${__dirname}/../services`
 if (fs.existsSync(serviceDir)) {
-  _.each(utils.file.getSubdirectories(serviceDir), loadDir)
+    _.each(utils.file.getSubdirectories(serviceDir), loadDir)
 }
 else {
-  logger.warn(`Couldn't find a services directory`)
+    logger.warn(`Couldn't find a services directory`)
 }
 
 // load the common services directory
-loadDir('./services')
-
-console.log(`${__dirname}/../../docs`)
+// loadDir('./services')
 
 // load the /api route
 router.get('/api', (req, res) => res.json(getServices()))

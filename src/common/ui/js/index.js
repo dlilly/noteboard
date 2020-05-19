@@ -18,16 +18,18 @@ let template = {
 function onSignIn(googleUser) {
     user = googleUser.getBasicProfile();
     document.getElementById('name').innerHTML = user.getName()
-    refreshProjects()
-    loadSharedServices()
+
+    var profile = googleUser.getBasicProfile();
+    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+    console.log('Name: ' + profile.getName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
 }
 
 function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
     user = null;
     auth2.signOut().then(function () {
-        refreshProjects()
-        loadSharedServices()
         $('#name').html('')
         console.log('User signed out.');
     });
