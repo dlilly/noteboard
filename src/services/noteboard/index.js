@@ -1,19 +1,17 @@
 let fs = require('fs-extra')
 let _ = require('lodash')
 let moment = require('moment')
+let gclient = require('./google')
 
-let save = () => {
-    global.io.emit('status', status)
-    fs.writeJSONSync(`${__basedir}/data/status.json`, status.user)
-}
+let tokens = fs.existsSync('/tmp/tokens.json') && fs.readJSONSync('/tmp/tokens.json')
 
-let restore = () => fs.readJSONSync(`${__basedir}/data/status.json`)
+const { google } = require('googleapis');
 
-let status = { user: restore() }
-
-global.io.on('connection', (socket) => {
-    socket.emit('status', status)
-});
+const oauth2Client = new google.auth.OAuth2(
+  global.config.get('OAUTH_CLIENT_ID'),
+  global.config.get('OAUTH_CLIENT_SECRET'),
+  global.config.get('OAUTH_CALLBACK_URI')
+);
 
 const checkCalendar = async () => {
     const event = _.first(await gclient.listEvents(oauth2Client))
@@ -33,24 +31,24 @@ const checkCalendar = async () => {
     save()
 }
 
-// setInterval(checkCalendar, 60000)
-// checkCalendar()
-
-let tokens = fs.existsSync('/tmp/tokens.json') && fs.readJSONSync('/tmp/tokens.json')
-
-const { google } = require('googleapis');
-
-const oauth2Client = new google.auth.OAuth2(
-  global.config.get('OAUTH_CLIENT_ID'),
-  global.config.get('OAUTH_CLIENT_SECRET'),
-  global.config.get('OAUTH_CALLBACK_URI')
-);
-
 if (tokens) {
     oauth2Client.setCredentials(tokens)
+    setInterval(checkCalendar, 60000)
+    checkCalendar()
 }
 
-let gclient = require('./google')
+let save = () => {
+    global.io.emit('status', status)
+    fs.writeJSONSync(`${__basedir}/data/status.json`, status.user)
+}
+
+let restore = () => fs.readJSONSync(`${__basedir}/data/status.json`)
+
+let status = { user: restore() }
+
+global.io.on('connection', (socket) => {
+    socket.emit('status', status)
+});
 
 module.exports = {
     microservices: [
@@ -99,7 +97,7 @@ module.exports = {
                 next()
             }
             else {    
-                const scopes = ['https://www.googleapis.com/auth/calendar'];
+                const scopes = ['https://www.googleapis.com/auth/calendar.events.readonly'];
                 const url = oauth2Client.generateAuthUrl({
                   // 'online' (default) or 'offline' (gets refresh_token)
                   access_type: 'offline',

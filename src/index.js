@@ -9,6 +9,16 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const express = require('express');
 
+// get the api key
+const fs = require('fs-extra')
+const { v4 } = require('uuid')
+
+let apiKey = fs.existsSync('/tmp/apiKey.txt') && fs.readFileSync('/tmp/apiKey.txt').toString()
+if (!apiKey) {
+    apiKey = v4()
+    fs.writeFileSync('/tmp/apiKey.txt', apiKey, { encoding: 'utf8' })
+}
+
 // express app setup
 const app = express();
 const port = config.get('PORT') || config.get('port') || 3001;
@@ -33,6 +43,16 @@ app.use(commonHandlers.log);
 
 // load the UI
 app.use('/ui', express.static(`${__dirname}/common/ui`));
+
+// for the apis, enforce an apikey
+app.use((req, res, next) => {
+    if (apiKey === req.headers['api-key']) {
+        next()
+    }
+    else {
+        next(`Invalid API key`)
+    }
+})
 
 // load the services
 app.use(serviceLoader)
