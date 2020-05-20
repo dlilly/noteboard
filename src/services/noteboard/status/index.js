@@ -12,13 +12,13 @@ $(document).ready(() => {
         console.log(JSON.stringify(status))
 
         $('#body').removeClass('free busy caution')
-        $('#body').addClass(status.meeting.status || status.user.status)
-        $('#message').html(status.meeting.message || status.user.message)
+        $('#body').addClass(status.meeting && status.meeting.status || status.user.status)
+        $('#message').html(status.meeting && status.meeting.message || status.user.message)
 
-        $('#comingUp').html(status.meeting.statusText)
-        $('#nextMeeting').html(status.meeting.summary)
-        $('#nextMeetingStartTime').html(`${status.meeting.duration}`)
+        $('#comingUp').html(status.meeting && status.meeting.statusText)
+        $('#nextMeeting').html(status.meeting && status.meeting.summary)
+        $('#nextMeetingStartTime').html(`${status.meeting && status.meeting.duration}`)
         $('#icon').removeClass('fa-exclamation-triangle fa-times-circle fa-check')
-        $('#icon').addClass(`fa fa-${iconMap[status.meeting.status || status.user.status]}`)
+        $('#icon').addClass(`fa fa-${iconMap[status.meeting && status.meeting.status || status.user.status]}`)
     });
 })
