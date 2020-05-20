@@ -46,11 +46,16 @@ app.use('/ui', express.static(`${__dirname}/common/ui`));
 
 // for the apis, enforce an apikey
 app.use((req, res, next) => {
-    if (apiKey === req.headers['api-key']) {
-        next()
+    if (req.path.indexOf('/api') > -1) {
+        if (apiKey === req.headers['api-key']) {
+            next()
+        }
+        else {
+            next(`Invalid API key`)
+        }
     }
     else {
-        next(`Invalid API key`)
+        next()
     }
 })
 
