@@ -8,3 +8,4 @@ coverage
 config/vault/*
 token.json
 credentials.json
+apiKey.txt

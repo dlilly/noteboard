@@ -13,10 +13,10 @@ const express = require('express');
 const fs = require('fs-extra')
 const { v4 } = require('uuid')
 
-let apiKey = fs.existsSync('/tmp/apiKey.txt') && fs.readFileSync('/tmp/apiKey.txt').toString()
+let apiKey = fs.existsSync('apiKey.txt') && fs.readFileSync('apiKey.txt').toString()
 if (!apiKey) {
     apiKey = v4()
-    fs.writeFileSync('/tmp/apiKey.txt', apiKey, { encoding: 'utf8' })
+    fs.writeFileSync('apiKey.txt', apiKey, { encoding: 'utf8' })
 }
 
 // express app setup

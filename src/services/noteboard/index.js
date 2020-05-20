@@ -3,7 +3,7 @@ let _ = require('lodash')
 let moment = require('moment')
 let gclient = require('./google')
 
-let tokens = fs.existsSync('/tmp/tokens.json') && fs.readJSONSync('/tmp/tokens.json')
+let tokens = fs.existsSync('tokens.json') && fs.readJSONSync('tokens.json')
 
 const { google } = require('googleapis');
 
@@ -57,11 +57,12 @@ module.exports = {
             handle: async ({ query }, res) => {
                 const resp = await oauth2Client.getToken(query.code)
 
-                console.log(JSON.stringify(resp))
-                oauth2Client.setCredentials(resp.tokens);
-
+                oauth2Client.setCredentials(resp.tokens)
+                setInterval(checkCalendar, 60000)
+                checkCalendar()
+            
                 // cache these in /tmp
-                fs.writeJSONSync('/tmp/tokens.json', resp.tokens)
+                fs.writeJSONSync('tokens.json', resp.tokens)
 
                 res.redirect(`https://noteboard-rrtxps.herokuapp.com/status/`)
             }
@@ -91,7 +92,7 @@ module.exports = {
     ],
     ui: [{
         middleware: (req, res, next) => {
-            tokens = fs.existsSync('/tmp/tokens.json') && fs.readJSONSync('/tmp/tokens.json')
+            tokens = fs.existsSync('tokens.json') && fs.readJSONSync('tokens.json')
             if (tokens) {
                 oauth2Client.setCredentials(tokens)
                 next()
