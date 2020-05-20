@@ -11,7 +11,7 @@ const express = require('express');
 
 // express app setup
 const app = express();
-const port = config.get('port') || 3001;
+const port = config.get('PORT') || config.get('port') || 3001;
 
 let commonHandlers = require('./common/common_handlers')
 

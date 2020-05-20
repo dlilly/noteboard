@@ -65,7 +65,7 @@ module.exports = {
                 // cache these in /tmp
                 fs.writeJSONSync('/tmp/tokens.json', resp.tokens)
 
-                res.redirect(`https://ctp.ngrok.io/status/`)
+                res.redirect(`https://noteboard-rrtxps.herokuapp.com/status/`)
             }
         },
         {
