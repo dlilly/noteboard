@@ -41,9 +41,9 @@ let tokens = fs.existsSync('/tmp/tokens.json') && fs.readJSONSync('/tmp/tokens.j
 const { google } = require('googleapis');
 
 const oauth2Client = new google.auth.OAuth2(
-  '958947031379-qpp6d9edrgshbjp0h9rao7b6q5jaohgi.apps.googleusercontent.com',
-  'CvFESxnrlVULKrtxrWYSqFz6',
-  'https://ctp.ngrok.io/oauth/callback'
+  global.config.get('OAUTH_CLIENT_ID'),
+  global.config.get('OAUTH_CLIENT_SECRET'),
+  global.config.get('OAUTH_CALLBACK_URI')
 );
 
 if (tokens) {
