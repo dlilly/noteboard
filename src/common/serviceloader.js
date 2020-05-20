@@ -63,6 +63,9 @@ let loadDir = dir => {
                     break;
 
                 case "ui":
+                    if (obj.middleware) {
+                        router.use(obj.middleware)
+                    }
                     router.use(obj.path, express.static(`${__dirname}/../services/${serviceName}/${obj.localPath}`));
                     break;
               
