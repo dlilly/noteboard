@@ -58,7 +58,7 @@
     "firebase-admin": "^8.11.0",
     "fs-extra": "^8.1.0",
     "googleapis": "^51.0.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "nconf": "^0.10.0",
     "redoc": "^1.20.0",
     "request": "^2.88.2",
